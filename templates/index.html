@@ -1,0 +1,960 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Character encoding and viewport for responsive design -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Student Study Assistant - Enhance your learning with AI-powered tools"
+    />
+    <meta name="theme-color" content="#1e293b" />
+
+    <!-- Page title -->
+    <title>Student Study Assistant</title>
+
+    <!-- Link to global stylesheet -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+
+  <body>
+    <!-- ====================================================================
+         MAIN APPLICATION CONTAINER
+         ==================================================================== -->
+
+    <div class="app-container">
+      <!-- ================================================================
+             SIDEBAR NAVIGATION
+             ================================================================ -->
+
+      <aside class="sidebar">
+        <!-- Logo and branding section -->
+        <div class="sidebar-header">
+          <h1 class="app-title">StudyAI</h1>
+          <p class="app-subtitle">Study Assistant</p>
+        </div>
+
+        <!-- Navigation menu with 4 core modules -->
+        <nav class="sidebar-nav">
+          <ul class="nav-list">
+            <!-- Module 1: Feynman Notepad -->
+            <li class="nav-item">
+              <button
+                class="nav-link active"
+                data-module="feynman"
+                aria-label="Switch to Feynman Notepad"
+              >
+                <span class="nav-icon">📝</span>
+                <span class="nav-text">Feynman Notepad</span>
+              </button>
+            </li>
+
+            <!-- Module 2: Audio Summarizer -->
+            <li class="nav-item">
+              <button
+                class="nav-link"
+                data-module="audio"
+                aria-label="Switch to Audio Summarizer"
+              >
+                <span class="nav-icon">🎙️</span>
+                <span class="nav-text">Audio Summarizer</span>
+              </button>
+            </li>
+
+            <!-- Module 3: Flashcard Deck -->
+            <li class="nav-item">
+              <button
+                class="nav-link"
+                data-module="flashcard"
+                aria-label="Switch to Flashcard Deck"
+              >
+                <span class="nav-icon">🎴</span>
+                <span class="nav-text">Flashcard Deck</span>
+              </button>
+            </li>
+
+            <!-- Module 4: Analytics Dashboard -->
+            <li class="nav-item">
+              <button
+                class="nav-link"
+                data-module="analytics"
+                aria-label="Switch to Analytics Dashboard"
+              >
+                <span class="nav-icon">📊</span>
+                <span class="nav-text">Analytics</span>
+              </button>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Sidebar footer with settings and user info -->
+        <div class="sidebar-footer">
+          <button
+            class="settings-btn"
+            id="theme-toggle"
+            aria-label="Toggle dark/light theme"
+          >
+            <span class="settings-icon">🌙</span>
+          </button>
+          <button
+            class="settings-btn"
+            id="help-btn"
+            aria-label="Open help documentation"
+          >
+            <span class="settings-icon">❓</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- ================================================================
+             MAIN CONTENT AREA
+             ================================================================ -->
+
+      <main class="main-content">
+        <!-- Page header with title and breadcrumb -->
+        <header class="content-header">
+          <div class="header-top">
+            <h2 class="page-title" id="page-title">Feynman Notepad</h2>
+            <div class="header-actions">
+              <!-- User greeting or status info -->
+              <span class="user-greeting">Welcome back!</span>
+            </div>
+          </div>
+          <!-- Breadcrumb navigation (optional, updates with current view) -->
+          <nav class="breadcrumb" aria-label="Breadcrumb">
+            <a href="#" class="breadcrumb-link">Home</a>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-current" id="breadcrumb-current"
+              >Feynman Notepad</span
+            >
+          </nav>
+        </header>
+
+        <!-- Dynamic content area where modules render -->
+        <section class="content-area">
+          <!-- Module 1: Feynman Notepad View -->
+          <div
+            class="module-view active"
+            id="feynman-view"
+            data-module="feynman"
+          >
+            <div class="module-container">
+              <div class="module-header">
+                <h3>Feynman Notepad</h3>
+                <p class="module-description">
+                  Explain concepts in simple terms to deepen understanding
+                </p>
+              </div>
+              <div class="module-content feynman-content">
+                <div class="feynman-layout">
+                  <!-- LEFT SIDE: INPUT FORM -->
+                  <div class="feynman-input-section">
+                    <h4>Express Your Understanding</h4>
+
+                    <div class="form-group">
+                      <label for="feynman-topic">Core Topic</label>
+                      <input
+                        type="text"
+                        id="feynman-topic"
+                        class="form-input"
+                        placeholder="e.g., Photosynthesis, Quantum Mechanics, Machine Learning"
+                        maxlength="100"
+                      />
+                      <small class="form-hint"
+                        >What concept do you want to explain?</small
+                      >
+                    </div>
+
+                    <div class="form-group">
+                      <label for="feynman-explanation"
+                        >Explain Like I'm 5</label
+                      >
+                      <textarea
+                        id="feynman-explanation"
+                        class="form-textarea"
+                        placeholder="Write your explanation here. Use simple words, real-world analogies, and concrete examples. Avoid jargon!"
+                        rows="8"
+                        maxlength="2000"
+                      ></textarea>
+                      <small class="form-hint"
+                        ><span id="feynman-char-count">0</span>/2000
+                        characters</small
+                      >
+                    </div>
+
+                    <button
+                      id="feynman-submit-btn"
+                      class="btn btn-primary feynman-submit"
+                    >
+                      <span class="btn-text">Analyze Explanation</span>
+                      <span class="btn-spinner hidden">●●●</span>
+                    </button>
+                  </div>
+
+                  <!-- RIGHT SIDE: FEEDBACK DISPLAY -->
+                  <div class="feynman-feedback-section">
+                    <h4>Feedback & Analysis</h4>
+                    <div
+                      id="feynman-feedback-container"
+                      class="feynman-feedback-container"
+                    >
+                      <div class="feedback-placeholder">
+                        <span class="placeholder-icon">💡</span>
+                        <p>
+                          Submit your explanation to receive instant feedback on
+                          clarity, gaps, and analogy quality.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Module 2: Audio Summarizer View -->
+          <div class="module-view" id="audio-view" data-module="audio">
+            <div class="module-container">
+              <div class="module-header">
+                <h3>Audio Summarizer</h3>
+                <p class="module-description">
+                  Convert lectures and discussions into concise summaries
+                </p>
+              </div>
+              <div class="module-content audio-content">
+                <div class="audio-layout">
+                  <!-- UPLOAD ZONE -->
+                  <div class="audio-upload-section">
+                    <div class="audio-url-section">
+                      <label for="audio-url-input">YouTube / Video Link</label>
+                      <div class="url-input-row">
+                        <input
+                          type="url"
+                          id="audio-url-input"
+                          class="form-input"
+                          placeholder="Paste YouTube link here"
+                          autocomplete="off"
+                        />
+                        <button
+                          id="audio-url-submit-btn"
+                          class="btn btn-secondary"
+                          type="button"
+                        >
+                          Summarize Video
+                        </button>
+                      </div>
+                      <small class="form-hint">
+                        Paste a YouTube link to summarize the lecture or
+                        tutorial.
+                      </small>
+                    </div>
+
+                    <div
+                      id="audio-dropzone"
+                      class="audio-dropzone"
+                      data-state="idle"
+                    >
+                      <div class="dropzone-content">
+                        <span class="dropzone-icon">🎙️</span>
+                        <h4>Drag & Drop Your Audio</h4>
+                        <p>or click to browse</p>
+                        <input
+                          type="file"
+                          id="audio-file-input"
+                          class="audio-file-input hidden"
+                          accept=".mp3,.wav,.m4a,.aac,.flac"
+                          hidden
+                        />
+                        <small class="dropzone-hint">
+                          Supported formats: MP3, WAV, M4A, AAC, FLAC (Max 50MB)
+                        </small>
+                      </div>
+
+                      <!-- PROGRESS BAR (hidden by default) -->
+                      <div class="upload-progress hidden" id="upload-progress">
+                        <div class="progress-bar">
+                          <div class="progress-fill"></div>
+                        </div>
+                        <div class="progress-text">
+                          <span id="progress-percentage">0%</span>
+                          <span id="progress-status">Uploading...</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- SUMMARY DISPLAY AREA -->
+                  <div class="audio-summary-section">
+                    <h4>Study Summary</h4>
+                    <div
+                      id="audio-summary-container"
+                      class="audio-summary-container"
+                    >
+                      <div class="summary-placeholder">
+                        <span class="placeholder-icon">📋</span>
+                        <p>
+                          Upload an audio file or paste a YouTube link to
+                          generate an automatic study summary.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Module 3: Flashcard Deck View -->
+          <div class="module-view" id="flashcard-view" data-module="flashcard">
+            <div class="module-container">
+              <div class="module-header">
+                <h3>Flashcard Deck</h3>
+                <p class="module-description">
+                  Create and review flashcards for efficient memorization
+                </p>
+              </div>
+              <div class="module-content">
+                <!-- Placeholder for Flashcard Deck content -->
+                <div class="placeholder-state">
+                  <span class="placeholder-icon">🎴</span>
+                  <h4>Flashcard Deck</h4>
+                  <p>
+                    Feature coming soon. Build custom flashcard decks and track
+                    your learning progress.
+                  </p>
+                  <button
+                    class="btn btn-primary"
+                    onclick="console.log('Feature in development')"
+                  >
+                    Create Deck
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Module 4: Analytics Dashboard View -->
+          <div class="module-view" id="analytics-view" data-module="analytics">
+            <div class="module-container">
+              <div class="module-header">
+                <h3>Analytics Dashboard</h3>
+                <p class="module-description">
+                  Track your learning progress and performance metrics
+                </p>
+              </div>
+              <div class="module-content">
+                <!-- Placeholder for Analytics Dashboard content -->
+                <div class="placeholder-state">
+                  <span class="placeholder-icon">📊</span>
+                  <h4>Analytics Dashboard</h4>
+                  <p>
+                    Feature coming soon. Monitor your study habits, progress,
+                    and learning insights.
+                  </p>
+                  <button
+                    class="btn btn-primary"
+                    onclick="console.log('Feature in development')"
+                  >
+                    View Metrics
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- ====================================================================
+         FOOTER
+         ==================================================================== -->
+
+    <footer class="app-footer">
+      <div class="footer-content">
+        <p>&copy; 2026 Student Study Assistant. All rights reserved.</p>
+        <p class="footer-version">v1.0.0 - Base Setup</p>
+      </div>
+    </footer>
+
+    <!-- ====================================================================
+         JAVASCRIPT APPLICATION
+         ==================================================================== -->
+
+    <script>
+      /**
+       * Student Study Assistant - Vanilla JavaScript Application
+       * =========================================================
+       * Modular SPA (Single Page Application) with dynamic module switching.
+       * Uses Fetch API for asynchronous server communication.
+       * No external frameworks - pure vanilla JavaScript with async/await.
+       */
+
+      // ====================================================================
+      // CONFIGURATION & STATE MANAGEMENT
+      // ====================================================================
+
+      const APP_CONFIG = {
+        apiBaseUrl: "/api",
+        debugMode: true,
+        defaultModule: "feynman",
+        theme: localStorage.getItem("appTheme") || "dark",
+      };
+
+      const APP_STATE = {
+        currentModule: APP_CONFIG.defaultModule,
+        isLoading: false,
+        userData: null,
+        moduleData: {},
+      };
+
+      // ====================================================================
+      // UTILITY FUNCTIONS
+      // ====================================================================
+
+      /**
+       * Lightweight logger for development debugging
+       * Only logs when debugMode is enabled in APP_CONFIG
+       */
+      const log = {
+        info: (message, data) => {
+          if (APP_CONFIG.debugMode)
+            console.log(`[INFO] ${message}`, data || "");
+        },
+        error: (message, error) => {
+          if (APP_CONFIG.debugMode)
+            console.error(`[ERROR] ${message}`, error || "");
+        },
+        warn: (message, data) => {
+          if (APP_CONFIG.debugMode)
+            console.warn(`[WARN] ${message}`, data || "");
+        },
+      };
+
+      /**
+       * Make asynchronous API requests to backend
+       * @param {string} endpoint - API endpoint path (e.g., '/feynman/notes')
+       * @param {object} options - Fetch options (method, body, headers, etc.)
+       * @returns {Promise<object>} - Parsed JSON response
+       */
+      async function apiCall(endpoint, options = {}) {
+        const url = `${APP_CONFIG.apiBaseUrl}${endpoint}`;
+        const defaultOptions = {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        };
+
+        const finalOptions = { ...defaultOptions, ...options };
+
+        try {
+          log.info(`API Call: ${finalOptions.method} ${url}`);
+          APP_STATE.isLoading = true;
+
+          const response = await fetch(url, finalOptions);
+
+          // Handle non-2xx HTTP responses
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+
+          const data = await response.json();
+          log.info(`API Response:`, data);
+          APP_STATE.isLoading = false;
+
+          return data;
+        } catch (error) {
+          log.error(`API Call Failed: ${url}`, error);
+          APP_STATE.isLoading = false;
+
+          // User-friendly error notification
+          showNotification(`Failed to load data: ${error.message}`, "error");
+          throw error;
+        }
+      }
+
+      /**
+       * Display temporary notifications to user
+       * @param {string} message - Notification text
+       * @param {string} type - Notification type ('info', 'error', 'success', 'warning')
+       */
+      function showNotification(message, type = "info") {
+        log.info(`[${type.toUpperCase()}] ${message}`);
+        // Notification logged to console for debugging
+      }
+
+      // ====================================================================
+      // FEATURE 1: FEYNMAN NOTEPAD HANDLERS
+      // ====================================================================
+
+      function initializeFeynmanHandlers() {
+        const topicInput = document.getElementById("feynman-topic");
+        const explanationTextarea = document.getElementById(
+          "feynman-explanation",
+        );
+        const submitBtn = document.getElementById("feynman-submit-btn");
+        const charCountSpan = document.getElementById("feynman-char-count");
+        const feedbackContainer = document.getElementById(
+          "feynman-feedback-container",
+        );
+
+        // Update character count in real-time
+        explanationTextarea.addEventListener("input", (e) => {
+          charCountSpan.textContent = e.target.value.length;
+        });
+
+        // Submit button click handler
+        submitBtn.addEventListener("click", async () => {
+          const topic = topicInput.value.trim();
+          const explanation = explanationTextarea.value.trim();
+
+          // Validation
+          if (!topic) {
+            showNotification("Please enter a topic", "warning");
+            topicInput.focus();
+            return;
+          }
+
+          if (!explanation) {
+            showNotification("Please enter an explanation", "warning");
+            explanationTextarea.focus();
+            return;
+          }
+
+          if (topic.length < 3) {
+            showNotification("Topic must be at least 3 characters", "warning");
+            return;
+          }
+
+          if (explanation.length < 20) {
+            showNotification(
+              "Explanation must be at least 20 characters",
+              "warning",
+            );
+            return;
+          }
+
+          // Show loading state
+          submitBtn.disabled = true;
+          const btnText = submitBtn.querySelector(".btn-text");
+          const btnSpinner = submitBtn.querySelector(".btn-spinner");
+          btnText.classList.add("hidden");
+          btnSpinner.classList.remove("hidden");
+
+          try {
+            // Send POST request to backend
+            const response = await fetch("/api/feynman", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                topic: topic,
+                explanation: explanation,
+              }),
+            });
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              throw new Error(errorData.error || "Analysis failed");
+            }
+
+            const result = await response.json();
+
+            // Display feedback
+            feedbackContainer.innerHTML = result.html_feedback;
+            showNotification("Analysis complete!", "success");
+
+            log.info("Feynman analysis completed:", result);
+          } catch (error) {
+            log.error("Feynman submission error:", error);
+            showNotification(`Error: ${error.message}`, "error");
+            feedbackContainer.innerHTML =
+              '<div class="feedback-error"><p>An error occurred during analysis. Please try again.</p></div>';
+          } finally {
+            // Restore button state
+            submitBtn.disabled = false;
+            btnText.classList.remove("hidden");
+            btnSpinner.classList.add("hidden");
+          }
+        });
+
+        log.info("Feynman handlers initialized");
+      }
+
+      // ====================================================================
+      // FEATURE 2: AUDIO SUMMARIZER HANDLERS
+      // ====================================================================
+
+      function initializeAudioHandlers() {
+        const dropzone = document.getElementById("audio-dropzone");
+        const fileInput = document.getElementById("audio-file-input");
+        const urlInput = document.getElementById("audio-url-input");
+        const urlSubmitBtn = document.getElementById("audio-url-submit-btn");
+        const progressDiv = document.getElementById("upload-progress");
+        const progressFill = progressDiv.querySelector(".progress-fill");
+        const progressPercentage = document.getElementById(
+          "progress-percentage",
+        );
+        const progressStatus = document.getElementById("progress-status");
+        const summaryContainer = document.getElementById(
+          "audio-summary-container",
+        );
+
+        // Click to browse
+        dropzone.addEventListener("click", () => {
+          fileInput.click();
+        });
+
+        // File input change handler
+        fileInput.addEventListener("change", (e) => {
+          if (e.target.files.length > 0) {
+            uploadAudioFile(e.target.files[0]);
+          }
+        });
+
+        // URL submit handler
+        urlSubmitBtn.addEventListener("click", () => {
+          const url = urlInput.value.trim();
+          if (!url) {
+            showNotification(
+              "Please paste a YouTube link before submitting.",
+              "error",
+            );
+            return;
+          }
+
+          if (!isValidYouTubeUrl(url)) {
+            showNotification("Please enter a valid YouTube link.", "error");
+            return;
+          }
+
+          summarizeVideoUrl(url);
+        });
+
+        urlInput.addEventListener("keypress", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            urlSubmitBtn.click();
+          }
+        });
+
+        // Drag over effect
+        dropzone.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          dropzone.setAttribute("data-state", "dragover");
+        });
+
+        // Drag leave effect
+        dropzone.addEventListener("dragleave", (e) => {
+          e.preventDefault();
+          dropzone.setAttribute("data-state", "idle");
+        });
+
+        // Drop handler
+        dropzone.addEventListener("drop", (e) => {
+          e.preventDefault();
+          dropzone.setAttribute("data-state", "idle");
+
+          if (e.dataTransfer.files.length > 0) {
+            const file = e.dataTransfer.files[0];
+            fileInput.files = e.dataTransfer.files; // Set the file input
+            uploadAudioFile(file);
+          }
+        });
+
+        // Validate YouTube link format
+        function isValidYouTubeUrl(url) {
+          const youtubeRegex =
+            /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[\w-]+/;
+          return youtubeRegex.test(url);
+        }
+
+        async function summarizeVideoUrl(videoUrl) {
+          urlSubmitBtn.disabled = true;
+          const previousText = urlSubmitBtn.textContent;
+          urlSubmitBtn.textContent = "Summarizing...";
+
+          // Show progress state for URL summarization
+          progressDiv.classList.remove("hidden");
+          progressFill.style.width = "20%";
+          progressPercentage.textContent = "Starting...";
+          progressStatus.textContent = "Summarizing video...";
+
+          try {
+            const response = await fetch("/api/audio-upload", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ video_url: videoUrl }),
+            });
+
+            const result = await response.json();
+            if (!response.ok) {
+              throw new Error(result.error || "Failed to summarize video");
+            }
+
+            progressFill.style.width = "100%";
+            progressPercentage.textContent = "100%";
+            progressStatus.textContent = "Completed";
+
+            summaryContainer.innerHTML = result.summary;
+            showNotification("Video summarized successfully!", "success");
+            log.info("Video summarization successful:", result);
+          } catch (error) {
+            log.error("Video summarization error:", error);
+            showNotification(`Error: ${error.message}`, "error");
+            summaryContainer.innerHTML =
+              '<div class="summary-error"><p>Failed to summarize video. Please check the link and try again.</p></div>';
+          } finally {
+            urlSubmitBtn.disabled = false;
+            urlSubmitBtn.textContent = previousText;
+            progressDiv.classList.add("hidden");
+            progressFill.style.width = "0%";
+            progressPercentage.textContent = "0%";
+            progressStatus.textContent = "Uploading...";
+          }
+        }
+
+        // Upload audio file function
+        async function uploadAudioFile(file) {
+          // Validate file type
+          const allowedTypes = [
+            "audio/mpeg",
+            "audio/wav",
+            "audio/mp4",
+            "audio/aac",
+            "audio/flac",
+          ];
+          const allowedExtensions = [".mp3", ".wav", ".m4a", ".aac", ".flac"];
+          const fileExtension = file.name
+            .substring(file.name.lastIndexOf("."))
+            .toLowerCase();
+
+          if (!allowedExtensions.includes(fileExtension)) {
+            showNotification(
+              "Invalid file format. Please use MP3, WAV, M4A, AAC, or FLAC.",
+              "error",
+            );
+            return;
+          }
+
+          // Show progress bar
+          dropzone.querySelector(".dropzone-content").classList.add("hidden");
+          progressDiv.classList.remove("hidden");
+          progressStatus.textContent = "Uploading file...";
+
+          try {
+            // Create FormData for file upload
+            const formData = new FormData();
+            formData.append("file", file);
+
+            // Upload with progress tracking
+            const xhr = new XMLHttpRequest();
+
+            // Progress event
+            xhr.upload.addEventListener("progress", (e) => {
+              if (e.lengthComputable) {
+                const percentComplete = (e.loaded / e.total) * 100;
+                progressFill.style.width = percentComplete + "%";
+                progressPercentage.textContent =
+                  Math.round(percentComplete) + "%";
+              }
+            });
+
+            // Upload complete
+            xhr.addEventListener("load", () => {
+              if (xhr.status === 200) {
+                const result = JSON.parse(xhr.responseText);
+                summaryContainer.innerHTML = result.summary;
+                showNotification("Audio processed successfully!", "success");
+                log.info("Audio upload successful:", result);
+              } else {
+                const errorData = JSON.parse(xhr.responseText);
+                throw new Error(errorData.error || "Upload failed");
+              }
+
+              // Reset UI
+              progressDiv.classList.add("hidden");
+              dropzone
+                .querySelector(".dropzone-content")
+                .classList.remove("hidden");
+              progressFill.style.width = "0%";
+              progressPercentage.textContent = "0%";
+              progressStatus.textContent = "Uploading...";
+            });
+
+            // Error handling
+            xhr.addEventListener("error", () => {
+              throw new Error("Network error during upload");
+            });
+
+            // Abort on error
+            xhr.addEventListener("abort", () => {
+              throw new Error("Upload cancelled");
+            });
+
+            // Open connection and send
+            xhr.open("POST", "/api/audio-upload");
+            xhr.send(formData);
+          } catch (error) {
+            log.error("Audio upload error:", error);
+            showNotification(`Error: ${error.message}`, "error");
+
+            // Reset UI
+            progressDiv.classList.add("hidden");
+            dropzone
+              .querySelector(".dropzone-content")
+              .classList.remove("hidden");
+            progressFill.style.width = "0%";
+            progressPercentage.textContent = "0%";
+            progressStatus.textContent = "Uploading...";
+
+            summaryContainer.innerHTML =
+              '<div class="summary-error"><p>Failed to process audio. Please try again.</p></div>';
+          }
+        }
+
+        log.info("Audio handlers initialized");
+      }
+
+      // ====================================================================
+      // MODULE SWITCHING & NAVIGATION
+      // ====================================================================
+
+      /**
+       * Switch between different application modules
+       * Updates UI, page title, and loads module-specific data
+       * @param {string} moduleName - Name of module to switch to
+       */
+      async function switchModule(moduleName) {
+        log.info(`Switching to module: ${moduleName}`);
+
+        // Validate module exists
+        const moduleElement = document.getElementById(`${moduleName}-view`);
+        if (!moduleElement) {
+          log.error(`Module not found: ${moduleName}`);
+          return;
+        }
+
+        // Update active nav link
+        document.querySelectorAll(".nav-link").forEach((link) => {
+          link.classList.remove("active");
+        });
+        document
+          .querySelector(`[data-module="${moduleName}"]`)
+          .classList.add("active");
+
+        // Hide all module views, show selected one
+        document.querySelectorAll(".module-view").forEach((view) => {
+          view.classList.remove("active");
+        });
+        moduleElement.classList.add("active");
+
+        // Update page title and breadcrumb
+        const titles = {
+          feynman: "Feynman Notepad",
+          audio: "Audio Summarizer",
+          flashcard: "Flashcard Deck",
+          analytics: "Analytics Dashboard",
+        };
+
+        document.getElementById("page-title").textContent =
+          titles[moduleName] || "Module";
+        document.getElementById("breadcrumb-current").textContent =
+          titles[moduleName] || "Module";
+
+        // Update state
+        APP_STATE.currentModule = moduleName;
+
+        log.info(`Module switched successfully to: ${moduleName}`);
+      }
+
+      // ====================================================================
+      // THEME MANAGEMENT
+      // ====================================================================
+
+      /**
+       * Toggle between dark and light theme
+       * Persists preference to localStorage for future sessions
+       */
+      function toggleTheme() {
+        const htmlElement = document.documentElement;
+        const currentTheme = htmlElement.getAttribute("data-theme") || "dark";
+        const newTheme = currentTheme === "dark" ? "light" : "dark";
+
+        htmlElement.setAttribute("data-theme", newTheme);
+        localStorage.setItem("appTheme", newTheme);
+
+        // Update theme toggle button icon
+        const themeBtn = document.getElementById("theme-toggle");
+        themeBtn.querySelector(".settings-icon").textContent =
+          newTheme === "dark" ? "🌙" : "☀️";
+
+        log.info(`Theme changed to: ${newTheme}`);
+      }
+
+      // ====================================================================
+      // INITIALIZATION & EVENT LISTENERS
+      // ====================================================================
+
+      /**
+       * Initialize application on page load
+       * Setup event listeners, apply saved theme, load initial data
+       */
+      function initializeApp() {
+        log.info("Initializing Student Study Assistant Application...");
+
+        // Apply saved theme
+        document.documentElement.setAttribute("data-theme", APP_CONFIG.theme);
+        const themeBtn = document.getElementById("theme-toggle");
+        themeBtn.querySelector(".settings-icon").textContent =
+          APP_CONFIG.theme === "dark" ? "🌙" : "☀️";
+
+        // Setup navigation event listeners
+        document.querySelectorAll(".nav-link").forEach((link) => {
+          link.addEventListener("click", (e) => {
+            e.preventDefault();
+            const moduleName = link.getAttribute("data-module");
+            switchModule(moduleName);
+          });
+        });
+
+        // Setup theme toggle button
+        document
+          .getElementById("theme-toggle")
+          .addEventListener("click", toggleTheme);
+
+        // Setup help button
+        document.getElementById("help-btn").addEventListener("click", () => {
+          showNotification("Help documentation coming soon!", "info");
+        });
+
+        // Initialize feature handlers
+        initializeFeynmanHandlers();
+        initializeAudioHandlers();
+
+        // Health check to verify backend connectivity
+        apiCall("/health")
+          .then((response) => {
+            log.info("Backend connection successful:", response);
+          })
+          .catch((error) => {
+            log.error("Backend health check failed:", error);
+            showNotification("Could not connect to backend server", "error");
+          });
+
+        log.info("Application initialized successfully!");
+      }
+
+      /**
+       * Run initialization when DOM is fully loaded
+       */
+      document.addEventListener("DOMContentLoaded", initializeApp);
+    </script>
+  </body>
+</html>
