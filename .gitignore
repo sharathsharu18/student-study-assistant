@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+dist/
+.eggs/
+*.egg-info/
+*.egg
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+
+# Flask uploads and runtime artifacts
+uploads/
+*.sqlite3
+
+# IDE / editor files
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
